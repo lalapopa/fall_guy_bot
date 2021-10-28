@@ -1,13 +1,14 @@
 import cv2 as cv
 import numpy as np
 import os
-import time as tm 
 from time import time
 from datetime import datetime
 import keyboard
+import logging
+
 from window_capture import WindowCapture
-from level_detect import *
-from data_path import *
+import img_detect 
+from service.service_data import ServiceData as sd
 
 
 class ImgSaver:
@@ -28,19 +29,20 @@ class ImgSaver:
 		cv.imwrite(self.image_name, self.image)
 
 
-class LogMeneger:
+class LogManager:
 	def __init__(self, path, create=''):
 		self.path = path
-		self.create = str('/')+create
+		self.create = '/'+ str(create)
 		self.runLog_file = 'runLog.txt'
 		self.keylog_file = 'keyLog.txt'
 
 	def directory_crate(self):
 		if os.path.exists(self.path + self.create):
-			print('Directory exists')
+			logging.debug(f'Directory exist {self.path + self.create}')
 			os.chdir(self.path + self.create)
 			return self.path + self.create
 		else:
+			logging.debug(f'Creating directory: {self.path + self.create}')
 			os.makedirs(self.path + self.create)
 			os.chdir(self.path + self.create)
 			return (self.path + self.create)
@@ -61,17 +63,18 @@ class LogMeneger:
 
 
 	def save_runlog(self, runs_number):
+		self.runs_number = str(runs_number) 
 		file = open(self.runLog_file,'w')
-		file.write(str(runs_number))
+		file.write(self.runs_number)
 		file.close()
-		print('RUNS ' +str(runs_number)+' log saved')
+		logging.debug(f'RUN #{self.runs_number}. Log saved')
 
 
 	def read_keylog(self):
 		try:
 			return open(self.keylog_file, 'w')
 		except Exception as e:
-			print(e, 'No suck file')
+			logging.warning(f'RUN #{self.runs_number}. No keylog file')
 			return []
 			 
 
@@ -132,9 +135,8 @@ def recording_level(file_for_key_log, path_for_img_saving, keys_for_track):
 	loop_time = time()
 	kt = KeyTracker(keys_for_track)
 
-	run = False
 	
-	while not run:
+	while True:
 		screen = vision_screencapture(raw_screen)
 		run_time = kt.save_log_and_return_time(file_for_key_log)
 		screen_name = get_screen_img_name(run_time) 
@@ -142,9 +144,9 @@ def recording_level(file_for_key_log, path_for_img_saving, keys_for_track):
 		save = ImgSaver(screen_name, screen, path_for_img_saving)
 		save.write_in_path()
 
-	    # debug the loop rate
-		print('FPS {}'.format(1/(time() - loop_time)))
+		logging.debug('FPS {}'.format(1/(time() - loop_time)))
 		loop_time = time()
+
 
 		if keyboard.is_pressed('r'):
 			cv.destroyAllWindows()
@@ -156,24 +158,29 @@ def recording_level(file_for_key_log, path_for_img_saving, keys_for_track):
 			file_for_key_log.close()
 			break
 
-
 def get_screen_img_name(name): return '{}.jpg'.format(name) 
 
+def main():
+	while(True):
+		name_of_level = img_detect.level_finder()
+		directory_for_level = LogManager(sd.path_data_levels, name_of_level)
+		level_path = directory_for_level.directory_crate()
+		number_of_runs = directory_for_level.read_runlog() + 1
+		save_runs = directory_for_level.save_runlog(number_of_runs)
 
-while(True):
-	name_of_level = level_finder()
-	directory_for_level = LogMeneger(path_data_levels, name_of_level)
-	level_path = directory_for_level.directory_crate()
-	number_of_runs = directory_for_level.read_runlog() + 1
-	save_runs = directory_for_level.save_runlog(number_of_runs)
+		directory_for_current_run = LogManager(level_path, str(number_of_runs))
+		run_path = directory_for_current_run.directory_crate()
 
-	directory_for_current_run = LogMeneger(level_path, str(number_of_runs))
-	run_path = directory_for_current_run.directory_crate()
+		key_log_file = directory_for_current_run.read_keylog()
 
-	key_log_file = directory_for_current_run.read_keylog()
+		img_detect.go_text_finder()
+		recording_level(key_log_file, run_path, sd.keys)
 
-	waiting_for_start()
 
-	recording_level(key_log_file, run_path, keys)
+if __name__ == "__main__":
+	debug = True
+	if debug:
+		logging.basicConfig(level=logging.DEBUG)
+	main()
 
 
