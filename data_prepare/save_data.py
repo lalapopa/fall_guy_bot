@@ -35,7 +35,7 @@ def save(level, delete=False,debug=False):
             X.append(features)
             y.append(label)
             
-        X = np.array(X).reshape(-1, 240, 427, 1) #Keras take 3 dimensional array 
+        X = np.array(X).reshape(-1, sd.img_size_y, sd.img_size_x, 1) #Keras take 3 dimensional array 
         y = np.array(y)
 
         os.chdir("D:/Documents/Python/fallguy_bot/DATA/LEVELS/" + level)
@@ -56,4 +56,5 @@ def save_npy_file(X, y):
         np.save(f, X)
     with open('y.npy', 'wb') as f:
         np.save(f, y)
-  
+
+    print('Done! Saving')

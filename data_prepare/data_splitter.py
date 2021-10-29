@@ -3,7 +3,7 @@ import numpy as np
 from service.service_data import ServiceData as sd
 
 def get_train_and_test_data(X_array, y_array, data_percent=0.1):
-    
+
     y_normalized, taken_position = normalize_data(y_array)
     X_normalized = [X_array[pos] for pos in taken_position]
 
@@ -15,7 +15,6 @@ def get_train_and_test_data(X_array, y_array, data_percent=0.1):
 
     index_for_test = get_unique_random_list(list_size_for_test, max_index)
     index_for_train = get_list_without_given_element(max_index, index_for_test)
-
 
     print('creating X_test')
     X_test = np.stack([X_normalized[num] for num in index_for_test])
@@ -67,24 +66,32 @@ def normalize_data(y_array):
                     press_dict['SPACE_nums'] += 1
                     pos_in_y['SPACE_nums'].append(lable_index)
 
-    min_key = min(press_dict, key=press_dict.get)
-    A_pressed = press_dict.get('A_nums')
+    press_amount = sum(press_dict.values())
+    avg_press = int(press_amount/len(press_dict))
+    print(f'avg pres = {avg_press}')
+    new_pos_y = {}
 
-    for key, value in pos_in_y.items():
-        if len(value) < A_pressed:
-            while A_pressed > len(pos_in_y.get(key)):
-                for i, val in enumerate(pos_in_y.get(key)):
-                    pos_in_y[key].append(val)
-                    if len(pos_in_y.get(key)) > A_pressed:
-                        break
+    for key_name, value in pos_in_y.items():
+        new_pos_y[key_name] = []
+        if len(value) != 0:
+            if len(value) < avg_press:
+                while avg_press > len(new_pos_y[key_name]):
+                    for i in value:
+                        new_pos_y[key_name].append(i)
+                        if len(new_pos_y[key_name]) >= avg_press:
+                            break
+
+            if len(value) > avg_press:
+                for_shuffle = [i for i in value]
+                random.shuffle(for_shuffle)
+                new_pos_y[key_name] = for_shuffle[:avg_press]
 
     y_new = []
     positions = []
 
-    for key, value in pos_in_y.items():
+    for key, value in new_pos_y.items():
         print(f'In Key = {key}, press len list = {len(value)}')
-        
-        for pos in value[:A_pressed - 1]:
+        for pos in value:
             y_new.append(y_array[pos])
             positions.append(pos)
 

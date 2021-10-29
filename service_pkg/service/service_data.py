@@ -42,3 +42,7 @@ class ServiceData:
 	'SHIFT':    [0,0,0,0,0,0,1],
 	'NOTHING':  [0,0,0,0,0,0,0],
 	}
+
+	img_size_x = 200
+	img_size_y = 120
+

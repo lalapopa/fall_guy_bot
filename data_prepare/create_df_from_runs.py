@@ -76,20 +76,31 @@ def read_imgs_in_run(name_list):
 		return False
 
 	img_list = []
+
 	for name in name_list:
-		try: 
-			file = name + '.jpg'
-			img = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
+		img_name = name + '.jpg'
+		img = read_img(img_name)
+		img = resize_img(img)	
 
-			(thresh, gray_img) = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
-
-			img_list.append(gray_img)
-
-		except FileNotFoundError:
-			print(f'cant read {name} img')
-	
+		img_list.append(img)
 
 	return img_list
+
+def read_img(file_name):
+	try:
+		img = cv2.imread(file_name, cv2.IMREAD_GRAYSCALE)
+		return img
+	except FileNotFoundError:
+		print(f'cant read {name} img')
+	
+
+def resize_img(img):
+	try:
+		img = cv2.resize(img, (sd.img_size_x, sd.img_size_y))
+		(thresh, gray_img) = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
+		return gray_img
+	except Exception as e:
+		pass 
 
 
 def remove_none_from_img_array(img_array):
