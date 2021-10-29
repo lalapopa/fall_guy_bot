@@ -10,6 +10,7 @@ from keras.layers.convolutional import Conv2D, MaxPooling2D, ZeroPadding2D
 from keras.layers.normalization import BatchNormalization
 from keras.regularizers import l2
 from tensorflow.keras.callbacks import TensorBoard
+from keras.layers import MaxPool2D
 
 from data_prepare.save_data import save
 from data_prepare.data_splitter import get_train_and_test_data as gttd
@@ -18,7 +19,7 @@ from service.service_data import ServiceData as sd
 
 def main():
     levels = sd.levels
-    for level in levels[7:]:
+    for level in levels:
         print(level)
         X, y = load_level(level)
         X_train, y_train, X_test, y_test = gttd(X, y)
@@ -55,31 +56,61 @@ def prepare_date(X_train, y_train, X_test, y_test):
 def CNN_model(X_train, y_train):
     model = Sequential()
 
-    # 2 sets of CRP (Convolution, RELU, Pooling)
-    model.add(Conv2D(20, (5, 5), padding="same",
-        input_shape=X_train.shape[1:], kernel_regularizer=l2(0.)))
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    # # 2 sets of CRP (Convolution, RELU, Pooling)
+    # model.add(Conv2D(20, (5, 5), padding="same",
+    #     input_shape=X_train.shape[1:], kernel_regularizer=l2(0.)))
+    # model.add(Activation("relu"))
+    # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-    model.add(Conv2D(50, (5, 5), padding="same",
-        kernel_regularizer=l2(0.)))
-    model.add(Activation("relu"))
-    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+    # model.add(Conv2D(50, (5, 5), padding="same",
+    #     kernel_regularizer=l2(0.)))
+    # model.add(Activation("relu"))
+    # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-    # Fully connected layers (w/ RELU)
-    model.add(Flatten())
-    model.add(Dense(500, kernel_regularizer=l2(0.)))
-    model.add(Activation("relu"))
+    # # Fully connected layers (w/ RELU)
+    # model.add(Flatten())
+    # model.add(Dense(500, kernel_regularizer=l2(0.)))
+    # model.add(Activation("relu"))
 
-    # Softmax (for classification)
-    model.add(Dense(len(y_train[0]), kernel_regularizer=l2(0.)))
-    model.add(Activation("softmax"))
+    # # Softmax (for classification)
+    # model.add(Dense(len(y_train[0]), kernel_regularizer=l2(0.)))
+    # model.add(Activation("softmax"))
+
+    # model.compile(
+    #     loss="binary_crossentropy",
+    #     optimizer='adam',
+    #     metrics=['accuracy']
+    # )
+
+
+    model = Sequential([
+    Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=X_train.shape[1:]),
+    BatchNormalization(),
+    MaxPool2D(pool_size=(3,3), strides=(2,2)),
+    Conv2D(filters=256, kernel_size=(5,5), strides=(1,1), activation='relu', padding="same"),
+    BatchNormalization(),
+    MaxPool2D(pool_size=(3,3), strides=(2,2)),
+    Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
+    BatchNormalization(),
+    Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
+    BatchNormalization(),
+    Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
+    BatchNormalization(),
+    MaxPool2D(pool_size=(3,3), strides=(2,2)),
+    Flatten(),
+    Dense(4096, activation='relu'),
+    Dropout(0.5),
+    Dense(4096, activation='relu'),
+    Dropout(0.5),
+    Dense(len(y_train[0]), activation='softmax')
+])
 
     model.compile(
         loss="binary_crossentropy",
         optimizer='adam',
         metrics=['accuracy']
     )
+
 
     model.summary()
     

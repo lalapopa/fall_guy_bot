@@ -3,18 +3,18 @@ class ServiceData:
 	path_levels = 'D:/Documents/Python/fallguy_bot/DATA/NEED_IMG/LEVELS'
 	path_data_levels = 'D:/Documents/Python/fallguy_bot/DATA/LEVELS' 
 
-	levels = ('BigFans','DizzyHeights','DoorDash','GateCrush','HitParade',
-	'KnightFever','RollOn','SeeSaw','SkylineStumble','TheWhirlygig',
-	'TundraRun','FreezyPeak','FruitChute','ShortCircuit','SkiFall',
-	'TipToe','WallGuys','JumpClub','RollOut','SlimeClimb',
-	'PerfectMatch','zamikanie','SnowballSurvival','test')
+	# levels = ('BigFans','DizzyHeights','DoorDash','GateCrush','HitParade',
+	# 'KnightFever','RollOn','SeeSaw','SkylineStumble','TheWhirlygig',
+	# 'TundraRun','FreezyPeak','FruitChute','ShortCircuit','SkiFall',
+	# 'TipToe','WallGuys','JumpClub','RollOut','SlimeClimb',
+	# 'PerfectMatch','zamikanie','SnowballSurvival','test')
 
 	#While CNN testing use that levels variable \/ 
+	
+	levels = ['BigFans', 'DizzyHeights','DoorDash', 'TundraRun', 'GateCrush', 'HitParade',
+	'KnightFever','RollOn','SeeSaw','SkylineStumble', 'zamikanie', 'TheWhirlygig'] 
 
-	# levels = ['DizzyHeights','DoorDash', 'TundraRun', 'GateCrush', 'HitParade',
-	# 'KnightFever','RollOn','SeeSaw','SkylineStumble', 'zamikanie', 'TheWhirlygig'] # trained untill seesaw
-
-	#big_fans trained 
+	
 
 	# 'FreezyPeak','FruitChute','ShortCircuit','SkiFall',
 	# 'TipToe','WallGuys','JumpClub','RollOut','SlimeClimb',
