@@ -5,7 +5,7 @@ from service.service_data import ServiceData as sd
 def return_key_from_categories(categories):
 
 	position_of_one = find_one_in_array(categories)
-	keys_list = [*sd.keys_categories]
+	keys_list = [*sd.keys_categories][1:] #except W
 	keys = [] 
 
 	if len(position_of_one) == 0:
@@ -16,7 +16,7 @@ def return_key_from_categories(categories):
 	for key in keys_list:
 		category = sd.keys_categories.get(key)
 		counter = -1 
-		for num in category:
+		for num in category[1:]:
 			counter += 1
 			if num == 1 and counter in position_of_one:
 				keys.append(key)
@@ -47,9 +47,9 @@ def keyboard_input(keys,key_release):
 
 
 def run_input(category, last_key=[]):
-	# keyboard.send('w', do_release=False)
+	keyboard.send('w', do_release=False)
 
-	category = category.tolist()
+	category = category.tolist()	
 	keys = return_key_from_categories(category)
 	print(f'I pressing {keys}')
 	last_key = keyboard_input(keys, last_key)

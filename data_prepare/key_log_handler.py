@@ -1,4 +1,5 @@
 from service.service_data import ServiceData as sd
+import re
 
 def return_time_key_from_log(key_log):
 	time = []
@@ -15,8 +16,8 @@ def return_time_key_from_log(key_log):
 
 
 def get_time(string):
-    raw_times = ''.join(n for n in string if n.isdigit())
-    return format_time(raw_times)
+    num = re.findall(r"\d+\.\d+|\d+|\.\d+", string)
+    return num[0] #Re return our number in list so we need take first one 
 
 
 def get_keys(string, time):
@@ -25,11 +26,6 @@ def get_keys(string, time):
         Key = string.replace(trash_symb, '', 1)
         Key = Key[:-1] # Remove new line \n symbols 
     return Key
-
-
-def format_time(raw_number, fraction_digits=6):
-    number = raw_number[:-fraction_digits] + '.' + raw_number[-fraction_digits:]
-    return number
 
 
 def kill_duplicates(seq):

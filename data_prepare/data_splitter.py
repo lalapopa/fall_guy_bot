@@ -9,7 +9,7 @@ def get_train_and_test_data(X_array, y_array, data_percent=0.1):
 
     max_index = get_img_amount(X_normalized) - 1  #we need last index available 
 
-    print(max_index)
+    print(f'img_number = {max_index}')
 
     list_size_for_test = int(max_index*data_percent)
 
@@ -33,6 +33,15 @@ def get_train_and_test_data(X_array, y_array, data_percent=0.1):
 
 def normalize_data(y_array):
     key_pos = [0, 1, 2, 3, 4, 5]  # 0 - W; 1 - A; 2 - S; 3 - D; 4 - SPACE;
+    key_names = [
+    'W_nums', 
+    'A_nums',
+    'S_nums',
+    'D_nums',
+    'SPACE_nums',
+    'E_nums',
+    'nothing'
+    ] 
     press_dict = {
     'W_nums': 0,
     'A_nums': 0,
@@ -40,6 +49,7 @@ def normalize_data(y_array):
     'D_nums': 0,
     'SPACE_nums': 0,
     'E_nums': 0,
+    'nothing': 0,
     }
 
     pos_in_y = {
@@ -49,28 +59,31 @@ def normalize_data(y_array):
     'D_nums': [],
     'SPACE_nums': [],
     'E_nums': [],
+    'nothing': [],
     }
     for lable_index, label in enumerate(y_array):
-        for index, num in enumerate(label):
-            if num == 1 and index in key_pos:
-                if index == key_pos[0]:
-                    press_dict['W_nums'] += 1
-                    pos_in_y['W_nums'].append(lable_index)
-                if index == key_pos[1]:
-                    press_dict['A_nums'] += 1
-                    pos_in_y['A_nums'].append(lable_index)
-                if index == key_pos[2]:
-                    press_dict['S_nums'] += 1
-                    pos_in_y['S_nums'].append(lable_index)
-                if index == key_pos[3]:
-                    press_dict['D_nums'] += 1
-                    pos_in_y['D_nums'].append(lable_index)
-                if index == key_pos[4]:
-                    press_dict['SPACE_nums'] += 1
-                    pos_in_y['SPACE_nums'].append(lable_index)
-                if index == key_pos[5]:
-                    press_dict['E_nums'] += 1
-                    pos_in_y['E_nums'].append(lable_index)
+        if any(label):
+            if only_w(label):
+                pos_in_y['nothing'].append(lable_index)
+                press_dict['nothing'] += 1 
+                continue
+            one_pos = find_one_in_array(label)
+
+            if len(one_pos) == 1:
+                for key in key_pos:
+                    if key in one_pos:
+                        pos_in_y[key_names[key]].append(lable_index)
+                        press_dict[key_names[key]] += 1
+
+            if one_pos[0] == 0 and len(one_pos) == 2:
+                for key in key_pos[1:]:
+                    if key in one_pos:
+                        pos_in_y[key_names[key]].append(lable_index)
+                        press_dict[key_names[key]] += 1
+
+        else:
+            pos_in_y['nothing'].append(lable_index)
+            press_dict['nothing'] += 1 
 
     # press_amount = sum(press_dict.values())
     # avg_press = int(press_amount/len(press_dict))
@@ -108,7 +121,15 @@ def normalize_data(y_array):
 
     return y_new, positions
 
+def only_w(array):
+    new_arr = array[1:]
+    if any(new_arr):
+        return False
+    if array[0] == 1:
+        return True
 
+def find_one_in_array(array):
+    return [i for i, val in enumerate(array) if val]
 
 def get_img_amount(array):
     shape = np.shape(array)
@@ -127,5 +148,3 @@ def get_list_without_given_element(array_size, element_positions):
         array.remove(i)
     return array
 
-if __name__ == '__main__':
-    print(get_unique_random_list(3, 5))

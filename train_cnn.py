@@ -104,7 +104,7 @@ def CNN_model(X_train, y_train):
     # Batch Normalisation
     model.add(BatchNormalization())
     #  output Layer 
-    model.add(Dense())
+    model.add(Dense(len(y_train[0])))
     model.add(Activation('sigmoid'))
 
     model.compile(
