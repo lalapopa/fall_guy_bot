@@ -1,6 +1,7 @@
-.ipynb_checkpoints/
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+__pycache__
 **/__pycache__
-.pyc
 **/DATA/LEVELS
+.pyc
 test3.py
-__pycache__/
