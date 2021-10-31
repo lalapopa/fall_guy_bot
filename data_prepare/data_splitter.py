@@ -32,20 +32,23 @@ def get_train_and_test_data(X_array, y_array, data_percent=0.1):
     return X_train, y_train, X_test, y_test
 
 def normalize_data(y_array):
-    key_pos = [0, 1, 2, 3, 4]  # 0 - W; 1 - A; 2 - S; 3 - D; 4 - SPACE;
+    key_pos = [0, 1, 2, 3, 4, 5]  # 0 - W; 1 - A; 2 - S; 3 - D; 4 - SPACE;
     press_dict = {
     'W_nums': 0,
     'A_nums': 0,
     'S_nums': 0,
     'D_nums': 0,
     'SPACE_nums': 0,
+    'E_nums': 0,
     }
+
     pos_in_y = {
     'W_nums': [],
     'A_nums': [],
     'S_nums': [],
     'D_nums': [],
     'SPACE_nums': [],
+    'E_nums': [],
     }
     for lable_index, label in enumerate(y_array):
         for index, num in enumerate(label):
@@ -65,36 +68,43 @@ def normalize_data(y_array):
                 if index == key_pos[4]:
                     press_dict['SPACE_nums'] += 1
                     pos_in_y['SPACE_nums'].append(lable_index)
+                if index == key_pos[5]:
+                    press_dict['E_nums'] += 1
+                    pos_in_y['E_nums'].append(lable_index)
 
-    press_amount = sum(press_dict.values())
-    avg_press = int(press_amount/len(press_dict))
-    print(f'avg pres = {avg_press}')
+    # press_amount = sum(press_dict.values())
+    # avg_press = int(press_amount/len(press_dict))
+  
+    max_value = max(press_dict.values())
+    print(f'press_number in key = {press_dict}')
+    print(f'max press = {max_value}')
     new_pos_y = {}
 
     for key_name, value in pos_in_y.items():
         new_pos_y[key_name] = []
         if len(value) != 0:
-            if len(value) < avg_press:
-                while avg_press > len(new_pos_y[key_name]):
+            if len(value) < max_value:
+                while max_value > len(new_pos_y[key_name]):
                     for i in value:
                         new_pos_y[key_name].append(i)
-                        if len(new_pos_y[key_name]) >= avg_press:
+                        if len(new_pos_y[key_name]) >= max_value:
                             break
 
-            if len(value) > avg_press:
+            if len(value) >= max_value:
                 for_shuffle = [i for i in value]
                 random.shuffle(for_shuffle)
-                new_pos_y[key_name] = for_shuffle[:avg_press]
+                new_pos_y[key_name] = for_shuffle[:max_value]
 
     y_new = []
     positions = []
 
+    #we take all key except 'W'
+    new_pos_y = dict(list(new_pos_y.items())[1:]) #Removing W from dict
     for key, value in new_pos_y.items():
         print(f'In Key = {key}, press len list = {len(value)}')
         for pos in value:
-            y_new.append(y_array[pos])
+            y_new.append(y_array[pos][1:]) #Removing W in list now index 0 is A key
             positions.append(pos)
-
 
     return y_new, positions
 

@@ -55,63 +55,63 @@ def prepare_date(X_train, y_train, X_test, y_test):
 
 def CNN_model(X_train, y_train):
     model = Sequential()
-
-    # # 2 sets of CRP (Convolution, RELU, Pooling)
-    # model.add(Conv2D(20, (5, 5), padding="same",
-    #     input_shape=X_train.shape[1:], kernel_regularizer=l2(0.)))
-    # model.add(Activation("relu"))
-    # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-
-    # model.add(Conv2D(50, (5, 5), padding="same",
-    #     kernel_regularizer=l2(0.)))
-    # model.add(Activation("relu"))
-    # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-
-    # # Fully connected layers (w/ RELU)
-    # model.add(Flatten())
-    # model.add(Dense(500, kernel_regularizer=l2(0.)))
-    # model.add(Activation("relu"))
-
-    # # Softmax (for classification)
-    # model.add(Dense(len(y_train[0]), kernel_regularizer=l2(0.)))
-    # model.add(Activation("softmax"))
-
-    # model.compile(
-    #     loss="binary_crossentropy",
-    #     optimizer='adam',
-    #     metrics=['accuracy']
-    # )
-
-
-    model = Sequential([
-    Conv2D(filters=96, kernel_size=(11,11), strides=(4,4), activation='relu', input_shape=X_train.shape[1:]),
-    BatchNormalization(),
-    MaxPool2D(pool_size=(3,3), strides=(2,2)),
-    Conv2D(filters=256, kernel_size=(5,5), strides=(1,1), activation='relu', padding="same"),
-    BatchNormalization(),
-    MaxPool2D(pool_size=(3,3), strides=(2,2)),
-    Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
-    BatchNormalization(),
-    Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
-    BatchNormalization(),
-    Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), activation='relu', padding="same"),
-    BatchNormalization(),
-    MaxPool2D(pool_size=(3,3), strides=(2,2)),
-    Flatten(),
-    Dense(4096, activation='relu'),
-    Dropout(0.5),
-    Dense(4096, activation='relu'),
-    Dropout(0.5),
-    Dense(len(y_train[0]), activation='softmax')
-])
+    # 1st Convolutional Layer
+    model.add(Conv2D(filters=96, input_shape=X_train.shape[1:], kernel_size=(11,11),\
+     strides=(4,4), padding='valid'))
+    model.add(Activation('relu'))
+    # Pooling 
+    model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2), padding='valid'))
+    # Batch Normalisation before passing it to the next layer
+    model.add(BatchNormalization())
+    # 2nd Convolutional Layer
+    model.add(Conv2D(filters=256, kernel_size=(5,5), strides=(1,1), padding='same'))
+    model.add(Activation('relu'))
+    # Pooling
+    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='valid'))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    # 3rd Convolutional Layer
+    model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+    model.add(Activation('relu'))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    # 4th Convolutional Layer
+    model.add(Conv2D(filters=384, kernel_size=(3,3), strides=(1,1), padding='same'))
+    model.add(Activation('relu'))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    # 5th Convolutional Layer
+    model.add(Conv2D(filters=256, kernel_size=(3,3), strides=(1,1), padding='same'))
+    model.add(Activation('relu'))
+    # Pooling
+    model.add(MaxPooling2D(pool_size=(3,3), strides=(2,2), padding='valid'))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    # Passing it to a dense layer
+    model.add(Flatten())
+    # 1st Dense Layer
+    model.add(Dense(4096, input_shape=X_train.shape[1:]))
+    model.add(Activation('relu'))
+    # Add Dropout to prevent overfitting
+    model.add(Dropout(0.4))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    # 2nd Dense Layer
+    model.add(Dense(4096))
+    model.add(Activation('relu'))
+    # Add Dropout
+    model.add(Dropout(0.4))
+    # Batch Normalisation
+    model.add(BatchNormalization())
+    #  output Layer 
+    model.add(Dense())
+    model.add(Activation('sigmoid'))
 
     model.compile(
         loss="binary_crossentropy",
         optimizer='adam',
         metrics=['accuracy']
     )
-
-
     model.summary()
     
     return model
@@ -122,7 +122,7 @@ def train_save_model(model, X_train, y_train, X_test, y_test, name):
     tensorboard = TensorBoard(log_dir='logs/{}'.format(NAME))
 
     model.fit(X_train, y_train, 
-        batch_size=64, epochs=5, 
+        batch_size=128, epochs=10, 
         validation_data=(X_test, y_test), 
         callbacks=[tensorboard],
         )

@@ -11,8 +11,8 @@ class ServiceData:
 
 	#While CNN testing use that levels variable \/ 
 	
-	levels = ['BigFans', 'DizzyHeights','DoorDash', 'TundraRun', 'GateCrush', 'HitParade',
-	'KnightFever','RollOn','SeeSaw','SkylineStumble', 'zamikanie', 'TheWhirlygig'] 
+	levels = ['KnightFever','RollOn' ,'TundraRun', 'HitParade',
+	'DizzyHeights', 'TheWhirlygig', 'DoorDash', 'GateCrush']
 
 	
 
