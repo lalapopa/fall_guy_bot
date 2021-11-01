@@ -1,0 +1,7 @@
+setup.py
+service/__init__.py
+service/service_data.py
+service_fgb.egg-info/PKG-INFO
+service_fgb.egg-info/SOURCES.txt
+service_fgb.egg-info/dependency_links.txt
+service_fgb.egg-info/top_level.txt

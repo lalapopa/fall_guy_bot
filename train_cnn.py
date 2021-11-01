@@ -22,11 +22,11 @@ def main():
     for level in levels:
         print(level)
         X, y = load_level(level)
-        X_train, y_train, X_test, y_test = gttd(X, y)
-        del X, y 
-        X_train, y_train, X_test, y_test = prepare_date(X_train, y_train, X_test, y_test)
-        cnn = CNN_model(X_train, y_train)
-        train_save_model(cnn, X_train, y_train, X_test, y_test, f'cnn_{level}')
+        # X_train, y_train, X_test, y_test = gttd(X, y)
+        # del X, y 
+        # X_train, y_train, X_test, y_test = prepare_date(X_train, y_train, X_test, y_test)
+        # cnn = CNN_model(X_train, y_train)
+        # train_save_model(cnn, X_train, y_train, X_test, y_test, f'cnn_{level}')
 
 
 
