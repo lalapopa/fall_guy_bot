@@ -52,6 +52,6 @@ def run_input(category, last_key=[]):
 	category = category.tolist()	
 	keys = return_key_from_categories(category)
 	print(f'I pressing {keys}')
-	last_key = keyboard_input(keys, last_key)
+	# last_key = keyboard_input(keys, last_key)
 	return last_key
 

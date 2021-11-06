@@ -1,7 +1,7 @@
 from service.service_data import ServiceData as sd
 import re
 
-def return_time_key_from_log(key_log):
+def get_time_and_keys(key_log):
 	time = []
 	keys = []
 

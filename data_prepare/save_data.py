@@ -33,6 +33,7 @@ def save(level, delete=False,debug=False):
 
         for features, label in training_data:
             X.append(features)
+            print(label)
             y.append(label)
             
         X = np.array(X).reshape(-1, sd.img_size_y, sd.img_size_x, 1) #Keras take 3 dimensional array 
