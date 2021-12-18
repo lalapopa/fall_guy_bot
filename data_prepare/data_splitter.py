@@ -15,6 +15,7 @@ def get_train_and_test_data(X_array, y_array, data_percent=0.1):
 
     index_for_test = get_unique_random_list(list_size_for_test, max_index)
     index_for_train = get_list_without_given_element(max_index, index_for_test)
+    random.shuffle(index_for_train)
 
     print('creating X_test')
     X_test = np.stack([X_normalized[num] for num in index_for_test])

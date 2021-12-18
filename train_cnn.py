@@ -4,17 +4,18 @@ import random
 import numpy as np 
 import cv2
 
-from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation, Flatten
-from keras.layers.convolutional import Conv2D, MaxPooling2D, ZeroPadding2D
-from keras.layers.normalization import BatchNormalization
-from keras.regularizers import l2
-from tensorflow.keras.callbacks import TensorBoard
-from keras.layers import MaxPool2D
+# from keras.models import Sequential
+# from keras.layers.core import Dense, Dropout, Activation, Flatten
+# from keras.layers.convolutional import Conv2D, MaxPooling2D, ZeroPadding2D
+# from keras.layers.normalization import BatchNormalization
+# from keras.regularizers import l2
+# from tensorflow.keras.callbacks import TensorBoard
+# from keras.layers import MaxPool2D
 
 from data_prepare.save_data import save
 from data_prepare.data_splitter import get_train_and_test_data as gttd
 from service.service_data import ServiceData as sd
+from keyboard_inputer import return_key_from_categories as get_key_name
 
 
 def main():
@@ -22,17 +23,26 @@ def main():
     for level in levels:
         print(level)
         X, y = load_level(level)
-        # X_train, y_train, X_test, y_test = gttd(X, y)
-        # del X, y 
-        # X_train, y_train, X_test, y_test = prepare_date(X_train, y_train, X_test, y_test)
+        X_train, y_train, X_test, y_test = gttd(X, y)
+        del X, y 
+        X_train, y_train, X_test, y_test = prepare_date(X_train, y_train, X_test, y_test)
+
+        for img, label in zip(X_train, y_train):
+            print(f'{label} is key {get_key_name(label)}')
+            cv2.imshow('my', img)
+            cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
+
         # cnn = CNN_model(X_train, y_train)
         # train_save_model(cnn, X_train, y_train, X_test, y_test, f'cnn_{level}')
 
 
 
 def load_level(level):
-    save(level, delete=True, debug=True)
-    os.chdir('D:/Documents/Python/fallguy_bot/DATA/LEVELS/'+ level)
+    save(level, delete=False, debug=True)
+    os.chdir(os.path.join(sd.path_data_levels, level))
     X = read_file('X.npy')
     y = read_file('y.npy')
     return X, y

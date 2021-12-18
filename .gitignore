@@ -3,5 +3,6 @@
 __pycache__
 **/__pycache__
 **/DATA/LEVELS
+**/dist
 .pyc
 test3.py

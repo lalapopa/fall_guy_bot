@@ -9,13 +9,14 @@ class ServiceData:
 	# 'TipToe','WallGuys','JumpClub','RollOut','SlimeClimb',
 	# 'PerfectMatch','zamikanie','SnowballSurvival','test')
 
-	#While CNN testing use that levels variable \/ 
+	# While CNN testing use that levels variable \/ 
 	
 	levels = ['KnightFever','RollOn' ,'TundraRun', 'HitParade',
 	'DizzyHeights', 'TheWhirlygig', 'DoorDash', 'GateCrush']
 
+	# While test functions 
+	# levels = ['SnowballSurvival']
 	
-
 	# 'FreezyPeak','FruitChute','ShortCircuit','SkiFall',
 	# 'TipToe','WallGuys','JumpClub','RollOut','SlimeClimb',
 	# 'PerfectMatch','zamikanie','SnowballSurvival','test']

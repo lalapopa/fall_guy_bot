@@ -160,6 +160,7 @@ def recording_level(file_for_key_log, path_for_img_saving, keys_for_track):
 
 def get_screen_img_name(name): return '{}.jpg'.format(name) 
 
+
 def main():
 	while(True):
 		name_of_level = img_detect.level_finder()

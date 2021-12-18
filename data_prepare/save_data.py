@@ -6,7 +6,7 @@ import numpy as np
 from .create_df_from_runs import return_df_from_all_runs
 from service.service_data import ServiceData as sd
 
-def save(level, delete=False,debug=False):
+def save(level, delete=False,debug=False): 
     os.chdir(os.path.join(sd.path_data_levels, level))
     if delete:
         try_delete()
@@ -33,13 +33,12 @@ def save(level, delete=False,debug=False):
 
         for features, label in training_data:
             X.append(features)
-            print(label)
             y.append(label)
             
         X = np.array(X).reshape(-1, sd.img_size_y, sd.img_size_x, 1) #Keras take 3 dimensional array 
         y = np.array(y)
 
-        os.chdir("D:/Documents/Python/fallguy_bot/DATA/LEVELS/" + level)
+        os.chdir(os.path.join(sd.path_data_levels, level))
         save_npy_file(X, y)
 
 def try_delete():
